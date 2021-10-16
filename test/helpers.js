@@ -1,5 +1,5 @@
 //helper file
-
+export const EVM_REVERT = 'VM Exception while processing transaction: revert'
 
 //n will be number of tokens
 export const tokens = (n) => {
