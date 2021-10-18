@@ -25,6 +25,11 @@ contract Exchange {
         feePercent = _feePercent;
     }
 
+    //fallback function to refund ether sent directly to the exchange
+    function() external {
+        revert();
+    }
+
 
     //we need to send ether to exchange and keep track of balance
     //keep track of ether inside of the tokens mapping to save storage

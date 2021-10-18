@@ -43,6 +43,13 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
 
      })
 
+    describe('fallback', () => {
+        it('reverts when Ether is sent', async () => {
+            //basic send ethereum transaction
+            await exchange.sendTransaction({ value: 1, from: user1 }).should.be.rejectedWith(EVM_REVERT)
+        })
+    }) 
+
     describe('deposit Ether', async () => {
         let result
         let amount
