@@ -43,7 +43,7 @@ import { tokens, EVM_REVERT } from './helpers'
         })
      })
 
-     describe('sending tokens', () => {
+     describe('delegated token transfers', () => {
       let amount
       let result
 
@@ -62,7 +62,7 @@ import { tokens, EVM_REVERT } from './helpers'
                //add function metadata {from:} msg.sender and from correspond
             })
             
-            it('sending  token', async () => {
+            it('transfers token balances', async () => {
                let balanceOf
                
                   //Before transfer
@@ -82,6 +82,11 @@ import { tokens, EVM_REVERT } from './helpers'
                   balanceOf = await token.balanceOf(receiver)
                   console.log("receiver balance after transfer ", balanceOf.toString())
                   balanceOf.toString().should.equal(tokens(100).toString())
+            })
+
+            it('resets the allowance', async () => {
+               const allowance = await token.allowance(deployer, exchange)
+               allowance.toString().should.equal('0')
             })
       
             it('emits a Transfer event', async () => { //async () => is passing in a function
@@ -141,8 +146,14 @@ import { tokens, EVM_REVERT } from './helpers'
          })
 
          describe('failure', () => {
-            it('', async () => {
-               
+            it('rejects insufficient amounts', async () => {
+               //Attempt to transfer more tokens than the total supply
+               const invalidAmount = tokens(1000000000)
+               await token.transferFrom(deployer, receiver, invalidAmount, { from: exchange }).should.be.rejectedWith(EVM_REVERT)
+            })
+
+            it('rejects invalid recipients', async () => {
+               await token.transferFrom(deployer, 0x0, amount, { from: exchange }).should.be.rejected
             })
          })
 
