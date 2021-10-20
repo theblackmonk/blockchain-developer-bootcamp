@@ -19,6 +19,7 @@ contract Exchange {
 
     //Define the event
     event Deposit(address token, address user, uint256 amount, uint256 balance);
+    event Withdraw(address token, address user, uint256 amount, uint256 balance);
 
     constructor (address _feeAccount, uint256 _feePercent) public {
         feeAccount = _feeAccount;
@@ -29,8 +30,6 @@ contract Exchange {
     function() external {
         revert();
     }
-
-
     //we need to send ether to exchange and keep track of balance
     //keep track of ether inside of the tokens mapping to save storage
     //ether doesn't have an address so we'll just use a blank address
@@ -41,10 +40,16 @@ contract Exchange {
         emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
     }
 
+    function withdrawEther(uint256 _amount) public {
+        require(tokens[ETHER][msg.sender] >= _amount); //they can't withdraw more than their balance
+        tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+        msg.sender.transfer(_amount);
+        emit Withdraw(ETHER, msg.sender, _amount, tokens[ETHER][msg.sender]);
+    }
 
     function depositToken(address _token, uint256 _amount) public {
         //Don't allow ether deposits by blocking ether address
-        require(_token != address(0));
+        require(_token != ETHER);
         
         //Send token to this contract
         //add the require so nothing else happens if this trasnfer doesn't occur
@@ -53,9 +58,15 @@ contract Exchange {
         tokens[_token][msg.sender] = tokens[_token][msg.sender].add(_amount);
         //Emit event
         emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
-
     }
 
+    function withdrawToken(address _token, uint256 _amount) public {
+        require(_token != ETHER);
+        require(tokens[_token][msg.sender] >= _amount);
+        tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+        require(Token(_token).transfer(msg.sender, _amount));
+        emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
+    }
     
 
 
