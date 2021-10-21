@@ -53,8 +53,8 @@ contract Token {
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= balanceOf[_from]);
-        require(_value <= allowance[_from][msg.sender]);
+        require(_value <= balanceOf[_from]); //requesting less than or equal to balance
+        require(_value <= allowance[_from][msg.sender]); //requesting less than or equal to balance
         allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         //here we reset the allowance. So after one transfer the exchange is not allowed to transfer anymore
         _transfer(_from, _to, _value);

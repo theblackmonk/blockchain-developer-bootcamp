@@ -13,9 +13,6 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
     let exchange
     let token
     const feePercent = 10
-    
-    
-    
 
     beforeEach(async () => {
         //pass in fee account as argument to contract constructor
@@ -206,5 +203,29 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             
         })
      
-     
+    describe('checking balances', async () => {
+    let result
+    let amount = ether(1)
+        beforeEach(async () => {
+           exchange.depositEther({ from: user1, value: amount })
+        })
+        
+        it('returns user balance', async () => {
+           const result = await exchange.balanceOf(ETHER_ADDRESS, user1)
+           result.toString().should.equal('0')
+       })
+    })
+
+    describe('making orders', async () => {
+    let result
+
+        beforeEach(async () => {
+            result = await exchange.makeOrder(token.address, tokens(1), ETHER_ADDRESS, ether(1), { from: user1 })
+        })
+
+        it('tracks the newly created order', async () => {
+            const orderCount = await exchange.orderCount()
+            orderCount.toString().should.equal('1')
+        })
+    })
  })
