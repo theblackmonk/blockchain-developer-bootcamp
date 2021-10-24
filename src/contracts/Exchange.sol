@@ -19,12 +19,15 @@ contract Exchange {
     mapping(uint256 => _Order) public orders;  //The key will be a uint256
     uint256 public orderCount; //keeps track of our orders as counter cache
     mapping(uint256 => bool) public orderCancelled;
+    mapping(uint256 => bool) public orderFilled; //mapping for was true/false the order filled
 
-    //Define the event
+    //Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
     event Withdraw(address token, address user, uint256 amount, uint256 balance);
     event Order(uint id, address user, address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint timestamp);
     event Cancel(uint id, address user, address tokenGet, uint amountGet, address tokenGive, uint amountGive, uint timestamp);
+    //address userFill is the user that filled the order
+    event Trade(uint id, address user, address tokenGet, uint amountGet, address tokenGive, uint amountGive, address userFill, uint timestamp);
 
     struct _Order {  //use _ to avoid naming conflict with event Order used outside contract
         uint id;      //uint = uint256
@@ -93,13 +96,43 @@ contract Exchange {
     }
 
     function cancelOrder(uint256 _id) public {
-       _order storage _order = orders[_id];
+       //point to struct _Order
+       //Pass in id. Id maps to a _order of type _Order struct fetched from storage
+       _Order storage _order = orders[_id];
+        require(address(_order.user) == msg.sender); //require msg.sender modifies order they made
+        require(_order.id == _id); //order must exist
        //Must be "my" order. Can't cancel someone else's order
        //Must be a valid order
         orderCancelled[_id] = true;
         emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, now);
     }
     
+    function fillOrder(uint256 _id) public {
+        require(_id > 0 && _id <= orderCount); //id is > 0 and it exists in our list
+        require(!orderFilled[_id]); //the order has not already been filled
+        require(!orderCancelled[_id]); //the order has not been cancelled
+        //Fetch the order
+        _Order storage _order = orders[_id]; //fetch order struct given id
+        _trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
+        orderFilled[_order.id] = true; //mark as filled
+    }
+    
+    //internal means it can only be called inside
+    function _trade(uint256 _orderId, address _user, address _tokenGet, uint _amountGet, address _tokenGive, uint256 _amountGive) internal {
+        // Fee paid by user that fills the order a.k.a msg.sender
+        uint256 _feeAmount = _amountGive.mul(feePercent).div(100);
+        
+        //Do the trade (msg.sender is using the order, )
+        tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet);
+        tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+        tokens[_tokenGive][_user] = tokens[_tokenGet][_user].sub(_amountGive);
+        tokens[_tokenGive][msg.sender] = tokens[_tokenGet][msg.sender].add(_amountGet);
+
+        //Charge fees
+
+
+        //emit a trade event
+    }
 
 
 
