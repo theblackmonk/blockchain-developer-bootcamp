@@ -95,12 +95,14 @@ contract Exchange {
         emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, now);
     }
 
+    //requires could be improved
     function cancelOrder(uint256 _id) public {
        //point to struct _Order
        //Pass in id. Id maps to a _order of type _Order struct fetched from storage
        _Order storage _order = orders[_id];
         require(address(_order.user) == msg.sender); //require msg.sender modifies order they made
         require(_order.id == _id); //order must exist
+        require(_id > 0 && _id <= orderCount); //id is > 0 and it exists in our list
        //Must be "my" order. Can't cancel someone else's order
        //Must be a valid order
         orderCancelled[_id] = true;
@@ -120,7 +122,7 @@ contract Exchange {
     //internal means it can only be called inside
     function _trade(uint256 _orderId, address _user, address _tokenGet, uint _amountGet, address _tokenGive, uint256 _amountGive) internal {
         // Fee paid by user that fills the order a.k.a msg.sender
-        uint256 _feeAmount = _amountGive.mul(feePercent).div(100); //get the fee
+        uint256 _feeAmount = _amountGet.mul(feePercent).div(100); //get the fee
         
         //Do the trade (msg.sender is using the order, )
         tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount));

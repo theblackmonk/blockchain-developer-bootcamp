@@ -9,7 +9,7 @@ require('chai')                      //importing assertion library
 import { assert } from 'chai'
 import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
 
- contract('Exchange', ([deployer, feeAccount, user1, user2]) => { //second account is fee account
+ contract('Exchange', ([deployer, feeAccount, user1, user2, rebalancer]) => { //second account is fee account
     let exchange
     let token
     const feePercent = 10
@@ -213,7 +213,7 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
         
         it('returns user balance', async () => {
            const result = await exchange.balanceOf(ETHER_ADDRESS, user1)
-           result.toString().should.equal(amount.toString()) 
+           result.toString().should.equal(ether(1).toString()) 
        }) 
     })
 
@@ -379,9 +379,8 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
                     await exchange.cancelOrder('1', { from: user2 }).should.be.rejectedWith(EVM_REVERT)
                 })
             })
-            
-
         })
+    })
         //_____________________________
         describe('fillOrder()', () => {
             describe('Check balances after filling user1 buy Tokens order', () => {
@@ -450,8 +449,4 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
               })
             })
           })
-        
-
-    })
-
  })
