@@ -53,8 +53,9 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
 
         
         beforeEach(async () => {
-            amount = ether(1)
             //reminder that ether is expressed in wei 18 decimals
+            amount = ether(1)
+            
             result = await exchange.depositEther({ from: user1, value: amount })
         })
 
@@ -81,7 +82,7 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
     beforeEach(async () => {
         //Deposit ether first
         amount = ether(1)
-        await exchange.depositEther({ from: user1, value: amount })
+        await exchange.depositEther({ from: user1, value: ether(1) })
     })
         describe('success', () => {
             beforeEach(async () => {
@@ -206,26 +207,35 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
     describe('checking balances', async () => {
     let result
     let amount = ether(1)
-        beforeEach(async () => {
-           exchange.depositEther({ from: user1, value: amount })
+        beforeEach(async () => { //deposit ether from user1
+           await exchange.depositEther({ from: user1, value: ether(1) }) //value: cannot be variable
         })
         
         it('returns user balance', async () => {
            const result = await exchange.balanceOf(ETHER_ADDRESS, user1)
-           result.toString().should.equal('0')  //unsolved error: '0' should be replaced with amount.toString()
-       }) //test will not pass successfully since balance is not being updated
+           result.toString().should.equal(amount.toString()) 
+       }) 
     })
 
-    describe('making orders', async () => {
+    describe('making orders', () => {
     let result
 
-        beforeEach(async () => {
+        beforeEach(async () => { //make order to buy 1 token for 1 ether
             result = await exchange.makeOrder(token.address, tokens(1), ETHER_ADDRESS, ether(1), { from: user1 })
         })
 
         it('tracks the newly created order', async () => {
-            const orderCount = await exchange.orderCount()
-            orderCount.toString().should.equal('1')
+            const orderCount = await exchange.orderCount() //get the orderCount
+            orderCount.toString().should.equal('1') //should be 1
+            const order = await exchange.orders('1')  //check all values of matching mapping for_Order struct
+            order.id.toString().should.equal('1', 'id is correct')
+            order.user.should.equal(user1, 'user is correct')
+            order.tokenGet.should.equal(token.address, 'tokenGet is correct')
+            order.amountGet.toString().should.equal(tokens(1).toString(), 'amountGet is correct')
+            order.tokenGive.should.equal(ETHER_ADDRESS, 'tokenGive is correct')
+            order.amountGive.toString().should.equal(ether(1).toString(), 'amountGive is correct')
+            order.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
+            console.log(order.timestamp.toString())
         })
 
         it('emits an "Order" event', async () => {
@@ -238,13 +248,13 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             event.amountGet.toString().should.equal(tokens(1).toString(), 'amountget is correct')
             event.tokenGive.should.equal(ETHER_ADDRESS, 'tokenGive is correct')
             event.amountGive.toString().should.equal(ether(1).toString(), 'amountGive is correct')
-            event.timestamp.toString().length.should.be.at.least
+            event.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
         })
 
 
     })
-
-    describe('order actions', async () => {
+    //-------------------------------------------------------------------------------------------------------
+    describe('order actions', async () => {  //large section
         let result
 
         beforeEach(async () => {
@@ -253,9 +263,10 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             // give tokens to user2
             await token.transfer(user2, tokens(100), { from: deployer })
             // user2 deposits tokens only
+            //approve is necessary for an intermediary to transfer tokens from one account to another account
             await token.approve(exchange.address, tokens(2), { from: user2 })
             await exchange.depositToken(token.address, tokens(2), { from: user2 })
-            //user1 makes an order to buy tokens with Ether
+            //user1 makes an order to buy 1 token with 1 Ether
             await exchange.makeOrder(token.address, tokens(1), ETHER_ADDRESS, ether(1), { from: user1 })
         })
 
@@ -267,7 +278,7 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
                   // user2 fills order
                   result = await exchange.fillOrder('1', { from: user2 })
                 })
-                //user2 should receive 10% less ether
+                //user2 should receive 10% less ether because fees
                 it('executes the trade & charges fees', async () => {
                   let balance
                   balance = await exchange.balanceOf(token.address, user1)
@@ -303,8 +314,30 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
                 })
               })
 
-        })
+              describe('failure', () => {
 
+                it('rejects invalid order ids', () => {
+                  const invalidOrderId = 99999
+                  exchange.fillOrder(invalidOrderId, { from: user2 }).should.be.rejectedWith(EVM_REVERT)
+                })
+        
+                it('rejects already-filled orders', () => {
+                  // Fill the order
+                  exchange.fillOrder('1', { from: user2 }).should.be.fulfilled
+                  // Try to fill it again
+                  exchange.fillOrder('1', { from: user2 }).should.be.rejectedWith(EVM_REVERT)
+                })
+        
+                it('rejects cancelled orders', () => {
+                  // Cancel the order
+                  exchange.cancelOrder('1', { from: user1 }).should.be.fulfilled
+                  // Try to fill the order
+                  exchange.fillOrder('1', { from: user2 }).should.be.rejectedWith(EVM_REVERT)
+                })
+              })
+
+        })
+        //_____________________________
         
         
         describe('cancelling orders', () => {
@@ -349,7 +382,7 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             
 
         })
-
+        //_____________________________
         describe('fillOrder()', () => {
             describe('Check balances after filling user1 buy Tokens order', () => {
               beforeEach(async () => {
@@ -386,11 +419,11 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
         
             describe('Check balances after filling user1 buy Ether order', () => {
               beforeEach(async () => {
-                // Uuser1 Gets the 10 tokens
+                // user1 Gets the 10 tokens
                 await token.transfer(user1, tokens(10), {from: deployer})
                 // user1 approve exchange to spend his tokens
                 await token.approve(exchange.address, tokens(10), {from: user1})
-                // user1 approve send tokens to the exchange 
+                // user1 send tokens to the exchange 
                 await exchange.depositToken(token.address, tokens(10), {from: user1})
                 // user1 create order to buy 1 Ether for 10 tokens
                 await exchange.makeOrder(ETHER_ADDRESS, ether(1), token.address, tokens(10), {from: user1})
