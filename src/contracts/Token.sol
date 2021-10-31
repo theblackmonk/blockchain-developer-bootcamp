@@ -46,15 +46,15 @@ contract Token {
     //Approve
     //The spender is the exchange in this case
     function approve(address _spender, uint256 _value) public returns (bool success) {
-        require(_spender != address(0)); //needs to be a valid address, not null
-        allowance[msg.sender][_spender] = _value;
+        require(_spender != address(0)); //spender needs to be a valid address, not null
+        allowance[msg.sender][_spender] = _value;  //exchange gets set allowance
         emit Approval(msg.sender, _spender, _value);
         return true;
     }
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         require(_value <= balanceOf[_from]); //requesting less than or equal to balance
-        require(_value <= allowance[_from][msg.sender]); //requesting less than or equal to balance
+        require(_value <= allowance[_from][msg.sender]); //requesting less than or equal to allowance
         allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
         //here we reset the allowance. So after one transfer the exchange is not allowed to transfer anymore
         _transfer(_from, _to, _value);
