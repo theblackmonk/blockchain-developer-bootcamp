@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import Web3 from 'web3';
 import { connect } from 'react-redux'
 import { loadWeb3, loadAccount, loadToken, loadExchange } from '../store/interactions' //We don't have to pass in (dispatch) it's passed down through props
-import { contractLoadedSelector } from '../store/selectors'
+import { contractsLoadedSelector } from '../store/selectors'
 import Navbar from './Navbar'
 import Content from './Content'
 
@@ -39,7 +38,7 @@ class App extends Component {
     <div>
       <script src="http://localhost:7545"></script>
       <Navbar />
-      { this.props.contractsLoaded ? <Content /> : <div classname="content"></div> }
+      { this.props.contractsLoaded ? <Content /> : <div className="content"></div> }
     </div>
     );
   }
@@ -48,7 +47,7 @@ class App extends Component {
 // Here we have access to state
 function mapStateToProps(state) {
   return {
-    contractsLoaded: contractLoadedSelector(state)
+    contractsLoaded: contractsLoadedSelector(state)
   }
 }
 

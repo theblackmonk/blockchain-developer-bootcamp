@@ -5,7 +5,6 @@ import App from './components/App'
 import configureStore from './store/configureStore'
 import 'bootstrap/dist/css/bootstrap.css'
 import reportWebVitals from './reportWebVitals'
-import * as serviceWorker from './serviceWorker'
 
 //wrap our app in this provider and the provider needs to know about a store
 ReactDOM.render(

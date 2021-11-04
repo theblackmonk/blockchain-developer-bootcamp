@@ -6,8 +6,11 @@ import {
     web3Loaded,
     web3AccountLoaded,
     tokenLoaded,
-    exchangeLoaded
- } from './action'
+    exchangeLoaded,
+    cancelledOrdersLoaded,
+    filledOrdersLoaded,
+    allOrdersLoaded
+ } from './actions'
 
 // dispatch comes from redux. It means we want to trigger an action and dispatch it with redux
 export const loadWeb3 = async (dispatch) => {
@@ -64,10 +67,22 @@ export const loadExchange = async (web3, networkId, dispatch) => {
 
 export const loadAllOrders = async (exchange, dispatch) => {
     // Fetch cancelled order with the "Cancel" event stream
-    exchange.getPastEvents('Cancel', { fromBlock: 0, toBlock: 'latest' })
-    console.log(cancelStream)
+    const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: 0, toBlock: 'latest' })
+    const cancelledOrders = cancelStream.map((event) => event.returnValues)
+    //console.log(cancelledOrders)
+    dispatch(cancelledOrdersLoaded(cancelledOrders))
+    
     // Fetch filled orders with the "Trade" event stream
+    const tradeStream = await exchange.getPastEvents('Trade', { fromBlock: 0, toBlock: 'latest' })
+    // Format filled orders
+    const filledOrders = tradeStream.map((event) => event.returnValues)
+    // Add cancelled orders to the redux store
+    dispatch(filledOrdersLoaded(filledOrders))
 
-    // Fetch all orders with the "Order" 
-
+    // Fetch all orders with the "Order"
+    const orderStream = await exchange.getPastEvents('Order', { fromBlock: 0, toBlock: 'latest' })
+    // Format order stream
+    const allOrders = orderStream.map((event) => event.returnValues)
+    // Add open orders to the redux store
+    dispatch(allOrdersLoaded(allOrders))
 }

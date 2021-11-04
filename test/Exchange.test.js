@@ -1,7 +1,6 @@
 const Exchange = artifacts.require("./Exchange") //get the contract
 const Token = artifacts.require("./Token") //get the token inside this test
 
-
 require('chai')                      //importing assertion library
 .use(require('chai-as-promised'))
 .should()                            //which asertions to import
@@ -36,7 +35,6 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             const result = await exchange.feePercent()
             result.toString().should.equal(feePercent.toString())
         })
-
 
      })
 
@@ -158,7 +156,6 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             })
         })
 
-
     })
 
     describe('withdrawing tokens', () => {
@@ -250,7 +247,6 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             event.amountGive.toString().should.equal(ether(1).toString(), 'amountGive is correct')
             event.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
         })
-
 
     })
     //-------------------------------------------------------------------------------------------------------
@@ -450,3 +446,4 @@ import { tokens, EVM_REVERT, ETHER_ADDRESS, ether } from './helpers'
             })
           })
  })
+
