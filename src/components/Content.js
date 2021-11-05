@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { exchangeSelector } from '../store/selectors'
 import { loadAllOrders } from '../store/interactions'
+import  Trades  from './Trades' //Can't use curly braces with a default export
 
 class Content extends Component {
         componentDidMount() {           //component lifecycle change componentWillMount = componentDidmount
@@ -22,7 +23,7 @@ class Content extends Component {
         <div className="vertical-split">
           <div className="card bg-dark text-white">
             <div className="card-header">
-              Card Title
+              Card Title 1
             </div>
             <div className="card-body">
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -31,7 +32,7 @@ class Content extends Component {
           </div>
           <div className="card bg-dark text-white">
             <div className="card-header">
-              Card Title
+              Card Title 2
             </div>
             <div className="card-body">
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -42,7 +43,7 @@ class Content extends Component {
         <div className="vertical">
           <div className="card bg-dark text-white">
             <div className="card-header">
-              Card Title
+              Card Title 3
             </div>
             <div className="card-body">
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -53,7 +54,7 @@ class Content extends Component {
         <div className="vertical-split">
           <div className="card bg-dark text-white">
             <div className="card-header">
-              Card Title
+              Card Title 4
             </div>
             <div className="card-body">
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -62,7 +63,7 @@ class Content extends Component {
           </div>
           <div className="card bg-dark text-white">
             <div className="card-header">
-              Card Title
+              Card Title 5
             </div>
             <div className="card-body">
               <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
@@ -71,15 +72,7 @@ class Content extends Component {
           </div>
         </div>
         <div className="vertical">
-          <div className="card bg-dark text-white">
-            <div className="card-header">
-              Card Title
-            </div>
-            <div className="card-body">
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="/#" className="card-link">Card link</a>
-            </div>
-          </div>
+          <Trades />
         </div>
       </div>
     )

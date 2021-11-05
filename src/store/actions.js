@@ -42,7 +42,7 @@ export function cancelledOrdersLoaded(cancelledOrders) {
 // filledOrdersLoaded
 export function filledOrdersLoaded(filledOrders) {
     return {
-        type: 'CANCELLED_ORDERS_LOADED',
+        type: 'FILLED_ORDERS_LOADED',
         filledOrders
     }
 }
@@ -50,7 +50,7 @@ export function filledOrdersLoaded(filledOrders) {
 // allOrdersLoaded
 export function allOrdersLoaded(allOrders) {
     return {
-        type: 'CANCELLED_ORDERS_LOADED',
+        type: 'ALL_ORDERS_LOADED',
         allOrders
     }
 }
