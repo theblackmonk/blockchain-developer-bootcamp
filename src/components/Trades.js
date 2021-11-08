@@ -27,7 +27,7 @@ class Trades extends Component {
         return (
             <div className="card bg-dark text-white">
                 <div className="card-header">
-                        Card Title 6
+                        Trades
                     </div>
                     <div className="card-body">
                     <table className="table table-dark table-sm small">
