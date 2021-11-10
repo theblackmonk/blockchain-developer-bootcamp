@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import App from './components/App'
+import 'bootstrap/dist/css/bootstrap.css' //Must be loaded before the app for proper display since we override style in app
+import App from './components/App' 
 import configureStore from './store/configureStore'
-import 'bootstrap/dist/css/bootstrap.css'
+
 import reportWebVitals from './reportWebVitals'
+
 
 //wrap our app in this provider and the provider needs to know about a store
 ReactDOM.render(

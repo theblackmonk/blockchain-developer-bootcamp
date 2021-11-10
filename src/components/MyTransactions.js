@@ -9,10 +9,10 @@ import {
   myOpenOrdersSelector,
 } from '../store/selectors'
 
-const showMyFilledOrders = (myFilledOrders) => {
+const showMyFilledOrders = (myFilledOrders) => {  //pass in filled orders
   return(
     <tbody>
-      { myFilledOrders.map((order) => {
+      { myFilledOrders.map((order) => {  //map over them to get the table
         return (
           <tr key={order.id}>
             <td className="text-muted">{order.formattedTimestamp}</td>
@@ -33,7 +33,8 @@ const showMyOpenOrders = (myOpenOrders) => {
           <tr key={order.id}>
             <td className={`text-${order.orderTypeClass}`}>{order.tokenAmount}</td>
             <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
-            <td className="text-muted">x</td>
+            <td className="text-muted">x</td>  { //ability to cancel order
+            }
           </tr>
         )
       }) }
@@ -82,6 +83,12 @@ class MyTransactions extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log({
+        myFilledOrders: myFilledOrdersSelector(state),
+        showMyFilledOrders: myFilledOrdersLoadedSelector(state),
+        myOpenOrders: myOpenOrdersSelector(state),
+        showMyOpenOrders: myOpenOrdersLoadedSelector(state)
+    })
 
   return {
     myFilledOrders: myFilledOrdersSelector(state),
