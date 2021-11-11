@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { exchangeSelector } from '../store/selectors'
-import { loadAllOrders } from '../store/interactions'
+import { loadAllOrders, subscribeToEvents } from '../store/interactions'
 import  Trades  from './Trades' //Can't use curly braces with a default export
 import OrderBook from './OrderBook'
 import MyTransactions from './MyTransactions'
@@ -9,16 +9,15 @@ import PriceChart from './PriceChart'
 
 class Content extends Component {
         componentDidMount() {           //component lifecycle change componentWillMount = componentDidmount
-          this.loadBlockchainData(this.props.dispatch) //passing in the value using props. Pretty neat
+          this.loadBlockchainData(this.props) //passing in the value using props. Pretty neat
         }
         //if we restart ganache it will still know where the token is, move networks, redeploy, etc  
         //token is put here so we don't have to keep chainging address
-        async loadBlockchainData(dispatch) { //Capstone project part 2 video 1
-          await loadAllOrders(this.props.exchange, dispatch)
+        async loadBlockchainData(props) { //Capstone project part 2 video 1
+          const { dispatch, exchange } = props
+          await loadAllOrders(exchange, dispatch)
+          await subscribeToEvents(exchange, dispatch) //refactored from this.props.exchange
         }
-
-
-
 
         render() {
           return (

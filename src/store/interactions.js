@@ -9,7 +9,11 @@ import {
     exchangeLoaded,
     cancelledOrdersLoaded,
     filledOrdersLoaded,
-    allOrdersLoaded
+    allOrdersLoaded,
+    orderCancelling,
+    orderCancelled,
+    orderFilling,
+    orderFilled
  } from './actions'
 
 // dispatch comes from redux. It means we want to trigger an action and dispatch it with redux
@@ -85,4 +89,39 @@ export const loadAllOrders = async (exchange, dispatch) => {
     const allOrders = orderStream.map((event) => event.returnValues)
     // Add open orders to the redux store
     dispatch(allOrdersLoaded(allOrders))
+}
+
+//responding to an event using web3
+export const subscribeToEvents = async (exchange, dispatch) => { 
+  exchange.events.Cancel({}, (error, event) => {
+    dispatch(orderCancelled(event.returnValues)) //dispatch a redux action corresponding to blockchain event
+  })
+
+  exchange.events.Trade({}, (error, event) => {
+    dispatch(orderFilled(event.returnValues))
+  })
+}
+
+export const cancelOrder = (dispatch, exchange, order, account) => {
+  exchange.methods.cancelOrder(order.id).send({ from: account })
+  // good for client side transactions
+  // in web3 documentation under ,methods.myMethod.send we use event emitter
+  .on('transactionHash', (hash) => {  // order Cancelling event (then order cancelled event after confirmation)
+     dispatch(orderCancelling())      
+  })
+  .on('error', (error) => {
+    console.log(error)
+    window.alert('There was an error!')
+  })
+}
+
+export const fillOrder = (dispatch, exchange, order, account) => {
+  exchange.methods.fillOrder(order.id).send({ from: account })
+  .on('transactionHash', (hash) => {
+     dispatch(orderFilling())
+  })
+  .on('error', (error) => {
+    console.log(error)
+    window.alert('There was an error!')
+  })
 }

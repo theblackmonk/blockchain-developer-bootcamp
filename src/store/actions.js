@@ -54,3 +54,31 @@ export function allOrdersLoaded(allOrders) {
         allOrders
     }
 }
+
+// Cancel Order
+export function orderCancelling() {  //returns no data since we only care about status
+    return {
+      type: 'ORDER_CANCELLING'
+    }
+  }
+  
+  export function orderCancelled(order) {
+    return {
+      type: 'ORDER_CANCELLED',
+      order   //pass in order data
+    }
+  }
+
+  // Fill Order
+export function orderFilling() {
+    return {
+      type: 'ORDER_FILLING'
+    }
+  }
+  
+  export function orderFilled(order) {
+    return {
+      type: 'ORDER_FILLED',
+      order
+    }
+  }
