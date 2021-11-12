@@ -19308,12 +19308,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xe28178E46129571c44f4124d19Af106B9C88F53C",
-      "transactionHash": "0xfd76005bba18f260c1609737e19fe8ab97b5fe99c732e9e5d359e16a7187ec15"
+      "address": "0x059448dD0A2d289e1E39d6f6c0E31E3941DA0C4C",
+      "transactionHash": "0x4c8e067d4729d0d3dca3dea16dd227255588c74321aaaabc4bf87d80cd3e2ed7"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-11-04T10:22:24.779Z",
+  "updatedAt": "2021-11-12T12:35:34.369Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

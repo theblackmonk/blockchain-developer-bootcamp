@@ -1,10 +1,15 @@
 import { get, groupBy, reject, maxBy, minBy } from 'lodash' //provides us a lot of nice functions to use
 import { createSelector } from 'reselect' //pre installed in package.json
-import { ETHER_ADDRESS, tokens, ether, GREEN, RED } from '../helpers'
+import { ETHER_ADDRESS, tokens, ether, GREEN, RED, formatBalance } from '../helpers'
 import moment from 'moment'  // formatting time
+
+
 
 //use lodash to avoid error of no account
 const account = state => get(state, 'web3.account') //state.web3.account, will run error if account does not exist
+
+const web3 = state => get(state, 'web3.connection')
+export const web3Selector = createSelector(web3, w => w)
 
 // long form createSelector(account, (account) => { return account })
 // mid form createSelector(account, account => acount)
@@ -13,6 +18,9 @@ export const accountSelector = createSelector(account, a => a)
 
 const tokenLoaded = state => get(state, 'token.loaded', false)
 export const tokenLoadedSelector = createSelector(tokenLoaded, tl => tl)
+
+const token = state => get(state, 'token.contract')
+export const tokenSelector = createSelector(token, t => t)
 
 const exchangeLoaded = state => get(state, 'exchange.loaded', false)
 export const exchangeLoadedSelector = createSelector(exchangeLoaded, el => el)
@@ -333,3 +341,51 @@ export const orderCancellingSelector = createSelector(orderCancelling, status =>
 
 const orderFilling = state => get(state, 'exchange.orderFilling', false)
 export const orderFillingSelector = createSelector(orderFilling, status => status)
+
+// BALANCES
+const balancesLoading = state => get(state, 'exchange.balancesLoading', true)
+export const balancesLoadingSelector = createSelector(balancesLoading, status => status)
+
+const etherBalance = state => get(state, 'web3.balance', 0)
+export const etherBalanceSelector = createSelector(
+  etherBalance,
+  (balance) => {
+    return formatBalance(balance)
+  }
+)
+
+const tokenBalance = state => get(state, 'token.balance', 0)
+export const tokenBalanceSelector = createSelector(
+  tokenBalance,
+  (balance) => {
+    return formatBalance(balance)
+  }
+)
+
+const exchangeEtherBalance = state => get(state, 'exchange.etherBalance', 0)
+export const exchangeEtherBalanceSelector = createSelector(
+  exchangeEtherBalance,
+  (balance) => {
+    return formatBalance(balance)
+  }
+)
+
+const exchangeTokenBalance = state => get(state, 'exchange.tokenBalance', 0)
+export const exchangeTokenBalanceSelector = createSelector(
+  exchangeTokenBalance,
+  (balance) => {
+    return formatBalance(balance)
+  }
+)
+
+const etherDepositAmount = state => get(state, 'exchange.etherDepositAmount', null)
+export const etherDepositAmountSelector = createSelector(etherDepositAmount, amount => amount)
+
+const etherWithdrawAmount = state => get(state, 'exchange.etherWithdrawAmount', null)
+export const etherWithdrawAmountSelector = createSelector(etherWithdrawAmount, amount => amount)
+
+const tokenDepositAmount = state => get(state, 'exchange.tokenDepositAmount', null)
+export const tokenDepositAmountSelector = createSelector(tokenDepositAmount, amount => amount)
+
+const tokenWithdrawAmount = state => get(state, 'exchange.tokenWithdrawAmount', null)
+export const tokenWithdrawAmountSelector = createSelector(tokenWithdrawAmount, amount => amount)
