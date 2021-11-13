@@ -1,0 +1,43 @@
+2_deploy_contracts.js
+=====================
+
+   Deploying 'Token'
+   -----------------
+   > transaction hash:    0x7ee1fbfd01f213f0fcfe48acfc98616cb7cf77a59a56658f2ba2b28a7dd15c61
+   > Blocks: 1            Seconds: 12
+   > contract address:    0xc6EdCEE8BDc5b1049002C5aadD17742F1D044De6
+   > block number:        9636179
+   > block timestamp:     1636825217
+   > account:             0x956E59450234a642Ee9Cd2CaFC7B99d5B7C12AB1
+   > balance:             0.09741363
+   > gas used:            795567 (0xc23af)
+   > gas price:           2.5 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0019889175 ETH
+
+
+   Deploying 'Exchange'
+   --------------------
+   > transaction hash:    0x8766b107c9673b43f097c9a889e7d2abff2a5eb0298eeaf83034797e9121ca04
+   > Blocks: 1            Seconds: 12
+   > contract address:    0xB3D786776191485489FEd7299ed53D752B055b4e
+   > block number:        9636180
+   > block timestamp:     1636825232
+   > account:             0x956E59450234a642Ee9Cd2CaFC7B99d5B7C12AB1
+   > balance:             0.0924440925
+   > gas used:            1987815 (0x1e54e7)
+   > gas price:           2.5 gwei
+   > value sent:          0 ETH
+   > total cost:          0.0049695375 ETH
+
+
+   > Saving migration to chain.
+   > Saving artifacts
+   -------------------------------------
+   > Total cost:         0.006958455 ETH
+
+
+Summary
+=======
+> Total deployments:   3
+> Final cost:          0.0074415625 ETH

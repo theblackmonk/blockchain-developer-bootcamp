@@ -51,17 +51,17 @@ module.exports = {
       network_id: "*"       // Match any network id
 
   },
-  kovan: {
+  rinkeby: {   // this is called in terminal
     provider: function() {
       return new HDWalletProvider(
         //Private Key
         privateKeys.split(','), // Array of account private keys
-        `https://kovan.infura.io/v3/${process.env.INFURA_API_KEY}`// (backticks) Url to an ethereum node
+        `https://rinkeby.infura.io/v3/${process.env.INFURA_API_KEY}`// (backticks) Url to an ethereum node
       )
     },
     gas: 5000000,
-    gasPrice: 25000000000,
-    network_id: 42    // mainnet ID is 1
+    gasPrice: 2500000000,
+    network_id: 4    // mainnet ID is 1, Kovan is 42, Rinkeby is 4
   }
 },
   contracts_directory: './src/contracts',
