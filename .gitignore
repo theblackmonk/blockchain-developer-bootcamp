@@ -10,6 +10,10 @@
 
 # production
 /build
+google-cloud-sdk-364.0.0-linux-x86_64.tar.gz
+Procfile
+server.js
+.gcloudignore
 
 # misc
 .DS_Store

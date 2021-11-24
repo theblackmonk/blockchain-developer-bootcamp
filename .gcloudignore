@@ -12,6 +12,8 @@
 # below:
 .git
 .gitignore
+google-cloud-sdk-364.0.0-linux-x86_64.tar.gz
+server.js
 
 # Node.js dependencies:
 node_modules/
